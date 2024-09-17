@@ -31,6 +31,7 @@ Inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Fixed the use of `minimum_should_match` with `Bool` to allow the use of string-based value (percent string, combination). ([#780](https://github.com/opensearch-project/opensearch-py/pull/780))
 - Fixed incorrect `retry_on_conflict` type ([#795](https://github.com/opensearch-project/opensearch-py/pull/795))
 ### Updated APIs
+- Updated opensearch-py APIs to reflect [opensearch-api-specification@8fe6a49](https://github.com/opensearch-project/opensearch-api-specification/commit/8fe6a49881224b594ba19727a365fff8357d9365)
 - Updated opensearch-py APIs to reflect [opensearch-api-specification@9d3bc34](https://github.com/opensearch-project/opensearch-api-specification/commit/9d3bc340ccd7d049e7d6e14a4aff2293780cb446)
 ### Dependencies
 - Bump `pytest-asyncio` from <=0.23.7 to <=0.23.8 ([#787](https://github.com/opensearch-project/opensearch-py/pull/787))

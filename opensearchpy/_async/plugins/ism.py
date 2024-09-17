@@ -21,19 +21,21 @@ from typing import Any
 from ..client.utils import SKIP_IN_PATH, NamespacedClient, _make_path, query_params
 
 
-class RollupsClient(NamespacedClient):
+class IsmClient(NamespacedClient):
     @query_params("error_trace", "filter_path", "human", "pretty", "source")
-    def delete(
+    async def add_policy(
         self,
-        id: Any,
+        index: Any,
+        body: Any = None,
         params: Any = None,
         headers: Any = None,
     ) -> Any:
         """
-        Delete index rollup.
+        Adds a policy to an index.
 
 
-        :arg id: Rollup to access
+        :arg index: Comma-separated list of data streams, indices, and
+            aliases. Supports wildcards (`*`).
         :arg error_trace: Whether to include the stack trace of returned
             errors.
         :arg filter_path: Used to reduce the response. This parameter
@@ -47,28 +49,102 @@ class RollupsClient(NamespacedClient):
         :arg source: The URL-encoded request definition. Useful for
             libraries that do not accept a request body for non-POST requests.
         """
-        if id in SKIP_IN_PATH:
-            raise ValueError("Empty value passed for a required argument 'id'.")
+        if index in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for a required argument 'index'.")
 
-        return self.transport.perform_request(
+        return await self.transport.perform_request(
+            "POST",
+            _make_path("_plugins", "_ism", "add", index),
+            params=params,
+            headers=headers,
+            body=body,
+        )
+
+    @query_params("error_trace", "filter_path", "human", "pretty", "source")
+    async def change_policy(
+        self,
+        index: Any,
+        body: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        """
+        Updates the managed index policy to a new policy.
+
+
+        :arg index: Comma-separated list of data streams, indices, and
+            aliases. Supports wildcards (`*`).
+        :arg error_trace: Whether to include the stack trace of returned
+            errors.
+        :arg filter_path: Used to reduce the response. This parameter
+            takes a comma-separated list of filters. It supports using wildcards to
+            match any field or part of a field’s name. You can also exclude fields
+            with "-".
+        :arg human: Whether to return human readable values for
+            statistics.
+        :arg pretty: Whether to pretty format the returned JSON
+            response.
+        :arg source: The URL-encoded request definition. Useful for
+            libraries that do not accept a request body for non-POST requests.
+        """
+        if index in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for a required argument 'index'.")
+
+        return await self.transport.perform_request(
+            "POST",
+            _make_path("_plugins", "_ism", "change_policy", index),
+            params=params,
+            headers=headers,
+            body=body,
+        )
+
+    @query_params("error_trace", "filter_path", "human", "pretty", "source")
+    async def delete_policy(
+        self,
+        policy_id: Any,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        """
+        Deletes a policy.
+
+
+        :arg error_trace: Whether to include the stack trace of returned
+            errors.
+        :arg filter_path: Used to reduce the response. This parameter
+            takes a comma-separated list of filters. It supports using wildcards to
+            match any field or part of a field’s name. You can also exclude fields
+            with "-".
+        :arg human: Whether to return human readable values for
+            statistics.
+        :arg pretty: Whether to pretty format the returned JSON
+            response.
+        :arg source: The URL-encoded request definition. Useful for
+            libraries that do not accept a request body for non-POST requests.
+        """
+        if policy_id in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for a required argument 'policy_id'.")
+
+        return await self.transport.perform_request(
             "DELETE",
-            _make_path("_plugins", "_rollup", "jobs", id),
+            _make_path("_plugins", "_ism", "policies", policy_id),
             params=params,
             headers=headers,
         )
 
     @query_params("error_trace", "filter_path", "human", "pretty", "source")
-    def explain(
+    async def explain_index(
         self,
-        id: Any,
+        index: Any,
         params: Any = None,
         headers: Any = None,
     ) -> Any:
         """
-        Get a rollup's current status.
+        Gets the currently applied policy on an index.
 
 
-        :arg id: Rollup to access
+        :arg index: Comma-separated list of data streams, indices, and
+            aliases. Supports wildcards (`*`).
         :arg error_trace: Whether to include the stack trace of returned
             errors.
         :arg filter_path: Used to reduce the response. This parameter
@@ -82,28 +158,27 @@ class RollupsClient(NamespacedClient):
         :arg source: The URL-encoded request definition. Useful for
             libraries that do not accept a request body for non-POST requests.
         """
-        if id in SKIP_IN_PATH:
-            raise ValueError("Empty value passed for a required argument 'id'.")
+        if index in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for a required argument 'index'.")
 
-        return self.transport.perform_request(
+        return await self.transport.perform_request(
             "GET",
-            _make_path("_plugins", "_rollup", "jobs", id, "_explain"),
+            _make_path("_plugins", "_ism", "explain", index),
             params=params,
             headers=headers,
         )
 
     @query_params("error_trace", "filter_path", "human", "pretty", "source")
-    def get(
+    async def get_policy(
         self,
-        id: Any,
+        policy_id: Any,
         params: Any = None,
         headers: Any = None,
     ) -> Any:
         """
-        Get an index rollup.
+        Gets the policy.
 
 
-        :arg id: Rollup to access
         :arg error_trace: Whether to include the stack trace of returned
             errors.
         :arg filter_path: Used to reduce the response. This parameter
@@ -117,12 +192,12 @@ class RollupsClient(NamespacedClient):
         :arg source: The URL-encoded request definition. Useful for
             libraries that do not accept a request body for non-POST requests.
         """
-        if id in SKIP_IN_PATH:
-            raise ValueError("Empty value passed for a required argument 'id'.")
+        if policy_id in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for a required argument 'policy_id'.")
 
-        return self.transport.perform_request(
+        return await self.transport.perform_request(
             "GET",
-            _make_path("_plugins", "_rollup", "jobs", id),
+            _make_path("_plugins", "_ism", "policies", policy_id),
             params=params,
             headers=headers,
         )
@@ -136,18 +211,17 @@ class RollupsClient(NamespacedClient):
         "pretty",
         "source",
     )
-    def put(
+    async def put_policy(
         self,
-        id: Any,
+        policy_id: Any,
         body: Any = None,
         params: Any = None,
         headers: Any = None,
     ) -> Any:
         """
-        Create or update index rollup.
+        Creates or updates a policy.
 
 
-        :arg id: Rollup to access
         :arg error_trace: Whether to include the stack trace of returned
             errors.
         :arg filter_path: Used to reduce the response. This parameter
@@ -165,29 +239,30 @@ class RollupsClient(NamespacedClient):
         :arg source: The URL-encoded request definition. Useful for
             libraries that do not accept a request body for non-POST requests.
         """
-        if id in SKIP_IN_PATH:
-            raise ValueError("Empty value passed for a required argument 'id'.")
+        if policy_id in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for a required argument 'policy_id'.")
 
-        return self.transport.perform_request(
+        return await self.transport.perform_request(
             "PUT",
-            _make_path("_plugins", "_rollup", "jobs", id),
+            _make_path("_plugins", "_ism", "policies", policy_id),
             params=params,
             headers=headers,
             body=body,
         )
 
     @query_params("error_trace", "filter_path", "human", "pretty", "source")
-    def start(
+    async def remove_policy(
         self,
-        id: Any,
+        index: Any,
         params: Any = None,
         headers: Any = None,
     ) -> Any:
         """
-        Start rollup.
+        Removes a policy from an index.
 
 
-        :arg id: Rollup to access
+        :arg index: Comma-separated list of data streams, indices, and
+            aliases. Supports wildcards (`*`).
         :arg error_trace: Whether to include the stack trace of returned
             errors.
         :arg filter_path: Used to reduce the response. This parameter
@@ -201,47 +276,12 @@ class RollupsClient(NamespacedClient):
         :arg source: The URL-encoded request definition. Useful for
             libraries that do not accept a request body for non-POST requests.
         """
-        if id in SKIP_IN_PATH:
-            raise ValueError("Empty value passed for a required argument 'id'.")
+        if index in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for a required argument 'index'.")
 
-        return self.transport.perform_request(
+        return await self.transport.perform_request(
             "POST",
-            _make_path("_plugins", "_rollup", "jobs", id, "_start"),
-            params=params,
-            headers=headers,
-        )
-
-    @query_params("error_trace", "filter_path", "human", "pretty", "source")
-    def stop(
-        self,
-        id: Any,
-        params: Any = None,
-        headers: Any = None,
-    ) -> Any:
-        """
-        Stop rollup.
-
-
-        :arg id: Rollup to access
-        :arg error_trace: Whether to include the stack trace of returned
-            errors.
-        :arg filter_path: Used to reduce the response. This parameter
-            takes a comma-separated list of filters. It supports using wildcards to
-            match any field or part of a field’s name. You can also exclude fields
-            with "-".
-        :arg human: Whether to return human readable values for
-            statistics.
-        :arg pretty: Whether to pretty format the returned JSON
-            response.
-        :arg source: The URL-encoded request definition. Useful for
-            libraries that do not accept a request body for non-POST requests.
-        """
-        if id in SKIP_IN_PATH:
-            raise ValueError("Empty value passed for a required argument 'id'.")
-
-        return self.transport.perform_request(
-            "POST",
-            _make_path("_plugins", "_rollup", "jobs", id, "_stop"),
+            _make_path("_plugins", "_ism", "remove", index),
             params=params,
             headers=headers,
         )
